@@ -153,7 +153,8 @@ public class Connection: SocketConnection {
         connectionQueue.async {
             // wait in case the transport failed immediately after being started to avoid
             // calling connectionDidClose before connectionDidOpen
-            self.startDispatchGroup.wait()
+            let dispatchTime = DispatchTime.now() + DispatchTimeInterval.milliseconds(200)
+            let _ = self.startDispatchGroup.wait(timeout: dispatchTime)
             Util.dispatchToMainThread {
                 self.delegate?.connectionDidClose(error: error)
             }
